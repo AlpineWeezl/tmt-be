@@ -15,7 +15,7 @@ usersRouter
     .all()
 
 usersRouter
-    .route('/:userId')
+    .route('/profile')
     .get()
     .put()
     .delete()
