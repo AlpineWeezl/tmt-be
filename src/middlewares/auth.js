@@ -56,10 +56,10 @@ export const credentialCheck = async (req, res, next) => {
 
 // ------------------------------------------------- check if the account to be modified is owned by the user reqeusted ---------------------------------
 export const ownAccount = async (req, res, next) => {
-    const { userID } = req.params;
-    const { email } = decryptedToken;
+    const { userId } = req.params;
+    const { email } = req.decryptedToken;
     try {
-        const user = await User.findById(userID);
+        const user = await User.findById(userId);
         (email === user.email || user.admin) ? next() : res.status(401).json({ error: `You don't own this account!` })
     } catch (error) {
         res.status(500).json({ error: 'Account check failed' });

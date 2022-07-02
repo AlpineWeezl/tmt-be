@@ -6,7 +6,6 @@ import { User } from "../models/User.js"
 
 // ########################################## Create #################################################
 // ------------------------------------------ Sign UP ------------------------------------------------
-
 export const createUser = async (req, res) => {
     const { username, email, encryptedPassword, message } = req.body;
     const { token } = req.headers;
@@ -34,8 +33,7 @@ export const getAllUsers = async (req, res) => {
     }
 }
 
-// ---------------------------------- Single By UserName ---------------------------------------------
-// ------------- Single By token (The token middleware puts the id into req.body) --------------------
+// ------------------------------------------- Single By ID ---------------------------------------------
 export const getSingleUserByUserId = async (req, res) => {
     const { userId } = req.params;
     try {
@@ -46,7 +44,36 @@ export const getSingleUserByUserId = async (req, res) => {
     }
 }
 
-// ----------------------------------------- LogIn ----------------------------------------------------
+
+// ######################################## Update #####################################################
+// -------------------------------------- Update User --------------------------------------------------
+export const updateUser = async (req, res) => {
+    const { userId } = req.params;
+    const { user } = req.body;
+    try {
+        user.modifiedAt = new Date;
+        const resUser = await User.findByIdAndUpdate(userId, user, { new: true });
+        res.status(200).json({ user: resUser });
+    } catch (error) {
+        res.status(500).json({ error: 'Modifying of the user failed!' })
+    }
+}
+
+// ######################################## Delete #####################################################
+export const deleteUser = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        await User.findByIdAndDelete(userId);
+        res.status(200).json({ message: 'User successfully deleted!' });
+    } catch (error) {
+        res.status(500).json({ error: 'Deleting of the user failed!' })
+    }
+}
+
+// ###################################################################################################
+// ####################################### Advanced CRUD #############################################
+// ###################################################################################################
+// ----------------------------------------- LogIn ---------------------------------------------------
 export const logIn = async (req, res) => {
     const { token } = req.headers;
     try {
@@ -59,19 +86,3 @@ export const logIn = async (req, res) => {
         res.status(500).json({ error: 'Login failed!' });
     }
 };
-
-// ######################################## Update #####################################################
-// -------------------------------------- Update User --------------------------------------------------
-export const updateUser = (req, res) => {
-}
-
-// ######################################## Delete #####################################################
-export const deleteUser = async (req, res) => {
-    const { userId } = req.params;
-    try {
-        User.findByIdAndDelete(userId);
-        res.status(200).json({ message: 'User successfully deleted!' });
-    } catch (error) {
-        res.status(500).json({ error: 'Delete of the user failed!' })
-    }
-}

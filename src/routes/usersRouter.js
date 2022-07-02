@@ -19,5 +19,5 @@ usersRouter
     .route('/:userId')
     .get(authorization, getSingleUserByUserId)
     .put(authorization, ownAccount, updateUser)
-    .delete(authorization,ownAccount, deleteUser)
+    .delete(authorization, ownAccount, deleteUser)
     .all();
