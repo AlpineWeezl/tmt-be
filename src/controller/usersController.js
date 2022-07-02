@@ -8,56 +8,70 @@ import { User } from "../models/User.js"
 // ------------------------------------------ Sign UP ------------------------------------------------
 
 export const createUser = async (req, res) => {
-    const { username, email, encryptedPassword } = req.body;
+    const { username, email, encryptedPassword, message } = req.body;
+    const { token } = req.headers;
     try {
         const newUser = {
             username: username,
             email: email,
             password: encryptedPassword
         }
-        console.log(User.findOne({ email: newUser.email }));
-        if (User.findOne({ email: newUser.email }) && User.findOne({ username: newUser.username }).length > 0) {
-            await User.create(newUser);
-            res.status(201).json({ users: newUser })
-        } else {
-            res.status(500).json({ error: 'User already exists' })
-        }
+        const createdUser = await User.create(newUser);
+        res.set({ 'authorization': token }).status(201).json({ users: createdUser, message: message })
     } catch (error) {
-        console.log(error);
+        res.status(500).json({ error: 'Creation of the new user failed!' })
     }
 }
 
 // ######################################## Read #####################################################
 // ----------------------------------------- All -----------------------------------------------------
 export const getAllUsers = async (req, res) => {
-    console.log(req.body);
     try {
-        const users = User.find();
-        // console.log(users);
+        const users = await User.find();
         res.status(200).json({ users: users })
     } catch (error) {
-        res.status(500).json({ error })
+        res.status(500).json({ error: 'Users request failed' })
     }
 }
 
 // ---------------------------------- Single By UserName ---------------------------------------------
 // ------------- Single By token (The token middleware puts the id into req.body) --------------------
-export const getSingleUserByUserId = (req, res) => {
-
+export const getSingleUserByUserId = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const user = await User.findById(userId);
+        res.status(200).json({ user: user })
+    } catch (error) {
+        res.status(500).json({ error: 'User request failed' })
+    }
 }
 
-// ---------------------------------- Single By UserName ---------------------------------------------
-
-
+// ----------------------------------------- LogIn ----------------------------------------------------
+export const logIn = async (req, res) => {
+    const { token } = req.headers;
+    try {
+        console.log(token);
+        res
+            .set("authorization", token)
+            .status(200)
+            .json({ message: "User successfully logged in" });
+    } catch (error) {
+        res.status(500).json({ error: 'Login failed!' });
+    }
+};
 
 // ######################################## Update #####################################################
-
-// ------------- Single By token (The token middleware puts the id into req.body) --------------------
+// -------------------------------------- Update User --------------------------------------------------
 export const updateUser = (req, res) => {
-
 }
 
 // ######################################## Delete #####################################################
-export const deleteUser = (req, res) => {
-
+export const deleteUser = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        User.findByIdAndDelete(userId);
+        res.status(200).json({ message: 'User successfully deleted!' });
+    } catch (error) {
+        res.status(500).json({ error: 'Delete of the user failed!' })
+    }
 }

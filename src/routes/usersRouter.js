@@ -1,16 +1,23 @@
 import { Router } from "express";
-import { createUser, deleteUser, getAllUsers, getSingleUserByUserId, updateUser } from "../controller/usersController.js";
-import { adminCheck, verifyToken } from "../middlewares/auth.js";
+import { createUser, deleteUser, getAllUsers, getSingleUserByUserId, logIn, updateUser } from "../controller/usersController.js";
+import { adminCheck, authorization, createToken, encryptPassword, credentialCheck, ownAccount } from "../middlewares/auth.js";
 
 export const usersRouter = Router();
 
 usersRouter
     .route('/')
-    .get(verifyToken, adminCheck, getAllUsers)
-    .post(createUser)
-    .all()
+    .get(authorization, adminCheck, getAllUsers)
+    .post(encryptPassword, createToken, createUser)
+    .all();
+
+usersRouter
+    .route('/login')
+    .post(credentialCheck, createToken, adminCheck, logIn)
+    .all();
 
 usersRouter
     .route('/:userId')
-    .get(getSingleUserByUserId)
-    .all()
+    .get(authorization, getSingleUserByUserId)
+    .put(authorization, ownAccount, updateUser)
+    .delete(authorization,ownAccount, deleteUser)
+    .all();
