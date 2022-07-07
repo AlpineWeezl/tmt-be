@@ -15,7 +15,7 @@ export const encryptPassword = async (req, res, next) => {
     }
 }
 
-// ------------------------------------------------------- create a token for passing via the req.body -----------------------------------------------
+// ------------------------------------------------------- create a token for passing via the req.headers --------------------------------------------
 export const createToken = async (req, res, next) => {
     try {
         const token = jwt.sign({ email: req.body.email }, process.env.JWT_SECRET); // { expiresIn: "1h" } -> optional
@@ -46,7 +46,6 @@ export const credentialCheck = async (req, res, next) => {
     try {
         const user = await User.findOne({ email: email }).select("+password");
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
-        console.log(isPasswordCorrect);
         !user && res.status(401).json({ error: 'Please create an account!' });
         isPasswordCorrect ? next() : res.status(401).json({ error: 'Password incorrect!' });
     } catch (error) {
