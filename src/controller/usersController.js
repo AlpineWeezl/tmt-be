@@ -5,7 +5,7 @@ import { User } from "../models/User.js"
 // ###################################################################################################
 
 // ########################################## Create #################################################
-// ------------------------------------------ Sign UP ------------------------------------------------
+// ------------------------------------------ Sign up ------------------------------------------------
 export const createUser = async (req, res) => {
     const { username, email, encryptedPassword, message } = req.body;
     const { token } = req.headers;
@@ -44,7 +44,6 @@ export const getSingleUserByUserId = async (req, res) => {
     }
 }
 
-
 // ######################################## Update #####################################################
 // -------------------------------------- Update User --------------------------------------------------
 export const updateUser = async (req, res) => {
@@ -77,12 +76,27 @@ export const deleteUser = async (req, res) => {
 export const logIn = async (req, res) => {
     const { token } = req.headers;
     try {
-        console.log(token);
         res
             .set("authorization", token)
             .status(200)
             .json({ message: "User successfully logged in" });
     } catch (error) {
         res.status(500).json({ error: 'Login failed!' });
+    }
+};
+
+// -------------------------------- create the response if succesfully verified ----------------------
+export const verifySession = async (req, res) => {
+    const { token } = req.headers;
+    try {
+        token && await res
+            .set("authorization", token)
+            .status(200)
+            .json({ message: 'User successfully verified!' });
+
+        !token && await res
+            .status(401)
+            .json({ message: 'User could NOT be verified!' })
+    } catch (error) {
     }
 };
