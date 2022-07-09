@@ -7,18 +7,30 @@ import { User } from "../models/User.js"
 // ########################################## Create #################################################
 // ------------------------------------------ Sign up ------------------------------------------------
 export const createUser = async (req, res) => {
-    const { username, email, encryptedPassword, message } = req.body;
+    const { user, encryptedPassword } = req.body;
     const { token } = req.headers;
     try {
         const newUser = {
-            username: username,
-            email: email,
+            ...user,
             password: encryptedPassword
         }
         const createdUser = await User.create(newUser);
-        res.set({ 'authorization': token }).status(201).json({ users: createdUser, message: message })
+        createTokenForNewUser(createdUser);
+        res.set({ 'authorization': token }).status(201).json({ user: createdUser, message: 'success' });
+
     } catch (error) {
-        res.status(500).json({ error: 'Creation of the new user failed!' })
+        res.status(500).json({ error: 'Creation of new user failed!' })
+    }
+}
+
+const createTokenForNewUser = async (user) => {
+    const { userId, email, username } = user;
+    try {
+        const token = await jwt.sign({ userId, email, username }, process.env.JWT_SECRET); // { expiresIn: "1h" } -> optional
+        req.headers.token = token;
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Creation of the token failed' });
     }
 }
 
@@ -27,7 +39,7 @@ export const createUser = async (req, res) => {
 export const getAllUsers = async (req, res) => {
     try {
         const users = await User.find();
-        res.status(200).json({ users: users })
+        res.status(200).json({ users })
     } catch (error) {
         res.status(500).json({ error: 'Users request failed' })
     }
@@ -50,7 +62,7 @@ export const updateUser = async (req, res) => {
     const { userId } = req.params;
     const { user } = req.body;
     try {
-        user.modifiedAt = new Date;
+        user.modifiedAt = new Date();
         const resUser = await User.findByIdAndUpdate(userId, user, { new: true });
         res.status(200).json({ user: resUser });
     } catch (error) {
@@ -75,11 +87,12 @@ export const deleteUser = async (req, res) => {
 // ----------------------------------------- LogIn ---------------------------------------------------
 export const logIn = async (req, res) => {
     const { token } = req.headers;
+    const { user } = req.body;
     try {
         res
             .set("authorization", token)
             .status(200)
-            .json({ message: "User successfully logged in" });
+            .json({ user: user, message: "User successfully logged in" });
     } catch (error) {
         res.status(500).json({ error: 'Login failed!' });
     }
@@ -88,11 +101,12 @@ export const logIn = async (req, res) => {
 // -------------------------------- create the response if succesfully verified ----------------------
 export const verifySession = async (req, res) => {
     const { token } = req.headers;
+    const { user } = req.body;
     try {
         token && await res
             .set("authorization", token)
             .status(200)
-            .json({ message: 'User successfully verified!' });
+            .json({user: user, message: 'User successfully verified!' });
 
         !token && await res
             .status(401)
