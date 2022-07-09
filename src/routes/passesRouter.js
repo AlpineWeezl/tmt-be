@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { createPass, deletePass, getAllPasses, getAllPassesByUserId, getSinglePassByPassId, updatePass } from "../controller/passesController";
-import { adminCheck, authorization, ownAccount } from "../middlewares/auth";
+import { createPass, deletePass, getAllPasses, getAllPassesByUserId, getSinglePassByPassId, updatePass } from "../controller/passesController.js";
+import { adminCheck, authorization, ownAccount } from "../middlewares/auth.js";
 
 export const passesRouter = Router();
 

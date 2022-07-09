@@ -9,13 +9,14 @@ import { Pass } from "../models/Pass.js"
 export const createPass = async (req, res) => {
     const { pass } = req.body;
     const { token } = req.headers;
+    const { userId } = req.params;
+    pass.userId = userId;
+    console.log(pass);
     try {
-        const newPass = {
-            pass
-        }
-        const createdPass = await Pass.create(newPass);
+        const createdPass = await Pass.create(pass);
         res.set({ 'authorization': token }).status(201).json({ pass: createdPass, message: 'pass was created successfully' })
     } catch (error) {
+        console.log(error);
         res.status(500).json({ error: 'Creation of the new Pass failed!' })
     }
 }
@@ -34,9 +35,9 @@ export const getAllPasses = async (req, res) => {
 export const getAllPassesByUserId = async (req, res) => {
     const { userId } = req.params;
     try {
-        const pass = await Pass.find({ userId: userId });
-        if (pass) {
-            res.status(200).json({ pass });
+        const passes = await Pass.find({ userId: userId });
+        if (passes) {
+            res.status(200).json({ passes: passes });
         } else {
             res.status(404).json({ message: `No passes for userId ${userId} found!` });
         };
