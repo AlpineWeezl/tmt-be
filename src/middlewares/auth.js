@@ -17,13 +17,15 @@ export const encryptPassword = async (req, res, next) => {
 
 // ------------------------------------------------------- create a token for passing via the req.headers --------------------------------------------
 export const createToken = async (req, res, next) => {
-    const { email, username } = req.body;
+    const { body } = req;
     try {
-        const user = await User.findOne({ or: [{ email: email }, { username: username }] });
+        const user = await User.findOne({ or: [{ email: body.email }, { username: body.username }] });
         const userId = user._id;
+        const email = user.email;
+        const username = user.username;
+        !req.body.user && (req.body.user = user);
         const token = jwt.sign({ userId, email, username }, process.env.JWT_SECRET); // { expiresIn: "1h" } -> optional
         req.headers.token = token;
-        !req.body.user && (req.body.user = user);
         next();
     }
     catch (error) {
@@ -39,6 +41,8 @@ export const authorization = async (req, res, next) => {
     } else {
         try {
             const decryptedToken = jwt.verify(authorization, process.env.JWT_SECRET);
+            const user = await User.findById(decryptedToken.userId);
+            (!req.body.user) && (req.body.user = user);
             req.decryptedToken = decryptedToken;
             next();
         } catch (err) {
@@ -49,16 +53,17 @@ export const authorization = async (req, res, next) => {
 
 // ------------------------------------------------------------------- check if the credential matches ----------------------------------------------------
 export const credentialCheck = async (req, res, next) => {
-    const { email, username, password } = req.body.user;
+    const { user } = req.body;
     try {
-        const user = await User.findOne({ $or: [{ email: email }, { username: username }] }).select("+password");
-        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+        const newUser = await User.findOne({ $or: [{ email: user.email }, { username: user.username }] }).select("+password");
+        const isPasswordCorrect = await bcrypt.compare(user.password, newUser.password);
         const decryptedToken = {
-            userId: user._id,
-            email: user.email,
-            username: user.username
+            userId: newUser._id,
+            email: newUser.email,
+            username: newUser.username
         }
         req.decryptedToken = decryptedToken;
+        req.body.user = newUser;
         !user && res.status(401).json({ error: 'Please create an account!' });
         isPasswordCorrect ? next() : res.status(401).json({ error: 'Password incorrect!' });
     } catch (error) {
@@ -80,22 +85,23 @@ export const ownAccount = async (req, res, next) => {
 
 // -------------------------------------------------------------- check if the user has admin privillegues -----------------------------------------------
 export const adminCheck = async (req, res, next) => {
-    const { decryptedToken } = req.headers;
-    const { email } = req.decryptedToken;
-    let tempEmail = null;
-    decryptedToken ? tempEmail = decryptedToken : email;
-
-    try {
-        const user = await User.findOne({ email: tempEmail });
-        if (user.admin) {
-            req.body.admin = true
-            next();
-        } else {
-            req.body.admin = false;
-            req.body.statusMessage = 'You have no admin privilleges!';
-            next();
+    const { user } = req.body;
+    if (user.email) {
+        try {
+            // const user = await User.findOne({ email: decryptedToken.email });
+            if (user.admin) {
+                req.body.admin = true
+                next();
+            } else {
+                req.body.admin = false;
+                req.body.statusMessage = 'You have no admin privilleges!';
+                next();
+            }
+        } catch (error) {
+            res.status(401).json({ error: 'Admin check failed!' });
         }
-    } catch (error) {
-        res.status(401).json({ error: 'Admin check failed!' });
+    } else {
+        req.body.admin = false;
+        next();
     }
 }

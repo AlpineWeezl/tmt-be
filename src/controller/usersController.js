@@ -88,6 +88,7 @@ export const deleteUser = async (req, res) => {
 export const logIn = async (req, res) => {
     const { token } = req.headers;
     const { user } = req.body;
+    console.log({'Login Controller: ': user});
     try {
         res
             .set("authorization", token)
@@ -100,17 +101,18 @@ export const logIn = async (req, res) => {
 
 // -------------------------------- create the response if succesfully verified ----------------------
 export const verifySession = async (req, res) => {
-    const { token } = req.headers;
+    const { authorization } = req.headers;
     const { user } = req.body;
     try {
-        token && await res
-            .set("authorization", token)
+        authorization && await res
+            .set("authorization", authorization)
             .status(200)
             .json({user: user, message: 'User successfully verified!' });
 
-        !token && await res
+        !authorization && await res
             .status(401)
             .json({ message: 'User could NOT be verified!' })
     } catch (error) {
+        res.status(500).json({message: 'Shit'})
     }
 };

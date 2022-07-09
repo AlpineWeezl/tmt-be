@@ -7,23 +7,23 @@ export const usersRouter = Router();
 
 usersRouter
     .route('/')
-    .get(authorization, adminCheck, createToken, getAllUsers)
+    .get(authorization, adminCheck, getAllUsers)
     .post(encryptPassword, createUser) // The token will be created after creating user, because of the need of the userId
     .all();
 
 usersRouter
     .route('/auth')
-    .get(authorization, adminCheck, createToken, verifySession)
+    .get(authorization, adminCheck, verifySession)
     .all();
 
 usersRouter
     .route('/login')
-    .post(credentialCheck, createToken,adminCheck, logIn)
+    .post(credentialCheck, createToken, adminCheck, logIn)
     .all();
 
 usersRouter
     .route('/:userId')
     .get(authorization, getSingleUserByUserId)
-    .put(authorization, createToken, ownAccount, updateUser)
+    .put(authorization, ownAccount, updateUser)
     .delete(authorization, ownAccount, deleteUser)
     .all();
