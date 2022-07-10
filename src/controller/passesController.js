@@ -11,7 +11,6 @@ export const createPass = async (req, res) => {
     const { token } = req.headers;
     const { userId } = req.params;
     pass.userId = userId;
-    console.log(pass);
     try {
         const createdPass = await Pass.create(pass);
         res.set({ 'authorization': token }).status(201).json({ pass: createdPass, message: 'pass was created successfully' })
@@ -50,7 +49,8 @@ export const getAllPassesByUserId = async (req, res) => {
 export const getSinglePassByPassId = async (req, res) => {
     const { passId } = req.params;
     try {
-        const pass = await Pass.findById(PassId);
+        const pass = await Pass.findById(passId);
+        console.log(pass);
         res.status(200).json({ pass })
     } catch (error) {
         res.status(500).json({ error: 'Pass request failed' })
@@ -60,12 +60,14 @@ export const getSinglePassByPassId = async (req, res) => {
 // ######################################## Update ###################################################
 // -------------------------------------- Update Pass ------------------------------------------------
 export const updatePass = async (req, res) => {
-    const { PassId } = req.params;
-    const { Pass } = req.body;
+    const { passId } = req.params;
+    console.log(passId);
+    const { pass } = req.body;
     try {
-        Pass.modifiedAt = new Date();
-        const resPass = await Pass.findByIdAndUpdate(PassId, Pass, { new: true });
-        res.status(200).json({ Pass: resPass });
+        pass.modifiedAt = new Date();
+        const resPass = await Pass.findByIdAndUpdate(passId, pass, { new: true });
+        console.log(resPass);
+        res.status(200).json({ pass: resPass });
     } catch (error) {
         res.status(500).json({ error: 'Modifying of the Pass failed!' })
     }

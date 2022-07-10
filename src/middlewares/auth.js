@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { User } from "../models/User.js";
 import bcrypt from "bcryptjs";
+import { Pass } from "../models/Pass.js";
 
 // ------------------------------------------------- encrypt the password before passing via the req.body --------------------------------------------
 export const encryptPassword = async (req, res, next) => {
@@ -73,11 +74,16 @@ export const credentialCheck = async (req, res, next) => {
 
 // ------------------------------------------------- check if the account to be modified is owned by the user reqeusted ---------------------------------
 export const ownAccount = async (req, res, next) => {
-    const { userId } = req.params;
-    const { email } = req.decryptedToken;
+    const { passId } = req.params;
+    const { email, userId } = req.decryptedToken;
     try {
         const user = await User.findById(userId);
-        (email === user.email || user.admin) ? next() : res.status(401).json({ error: `You don't own this account!` })
+        const pass = await Pass.findById(passId);
+        if ((pass && (pass.userId === userId || user.admin)) || (!pass && (email === user.email || user.admin))) {
+            next()
+        } else {
+            res.status(401).json({ error: `You don't own this account!` })
+        }
     } catch (error) {
         res.status(401).json({ error: 'Account check failed' });
     }
