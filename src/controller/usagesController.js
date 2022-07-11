@@ -8,12 +8,11 @@ import { Usage } from "../models/Usage.js"
 // ----------------------------------------- new Usage ------------------------------------------------
 export const createUsage = async (req, res) => {
     const { usage } = req.body;
-    const { token } = req.headers;
     const { passId } = req.params;
     usage.passId = passId;
     try {
         const createdUsage = await Usage.create(usage);
-        res.set({ 'authorization': token }).status(201).json({ Usage: createdUsage, message: 'Usage was created successfully' })
+        res.status(201).json({ usage: createdUsage, message: 'Usage was created successfully' })
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Creation of the new usage failed!' })
@@ -35,7 +34,7 @@ export const getAllUsageesByUserId = async (req, res) => {
     const { userId } = req.params;
     try {
         const usages = await Usage.find({ userId: userId });
-        if (Usagees) {
+        if (usages) {
             res.status(200).json({ usages: usages });
         } else {
             res.status(404).json({ message: `No Usagees for userId ${userId} found!` });
@@ -46,10 +45,10 @@ export const getAllUsageesByUserId = async (req, res) => {
 }
 
 export const getAllUsagesByPassId = async (req, res) => {
-    const { UsageId } = req.params;
+    const { passId } = req.params;
     try {
         const usages = await Usage.find({ passId: passId });
-        if (Usagees) {
+        if (usages) {
             res.status(200).json({ usages: usages });
         } else {
             res.status(404).json({ message: `No Usagees for passId ${passId} found!` });
@@ -63,9 +62,8 @@ export const getAllUsagesByPassId = async (req, res) => {
 export const getSingleUsageByUsageId = async (req, res) => {
     const { usageId } = req.params;
     try {
-        const Usage = await Usage.findById(usageId);
-        console.log(Usage);
-        res.status(200).json({ Usage })
+        const usage = await Usage.findById(usageId);
+        res.status(200).json({ usage: usage })
     } catch (error) {
         res.status(500).json({ error: 'Usage request failed' })
     }
@@ -75,12 +73,11 @@ export const getSingleUsageByUsageId = async (req, res) => {
 // -------------------------------------- Update Usage ------------------------------------------------
 export const updateUsage = async (req, res) => {
     const { usageId } = req.params;
-    const { Usage } = req.body;
+    const { usage } = req.body;
     try {
         Usage.modifiedAt = new Date();
-        const resUsage = await Usage.findByIdAndUpdate(usageId, Usage, { new: true });
-        console.log(resUsage);
-        res.status(200).json({ Usage: resUsage });
+        const resUsage = await Usage.findByIdAndUpdate(usageId, usage, { new: true });
+        res.status(200).json({ usage: resUsage });
     } catch (error) {
         res.status(500).json({ error: 'Modifying of the Usage failed!' })
     }

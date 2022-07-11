@@ -6,11 +6,14 @@ const usagesSchema = new Schema(
     {
         passId: { type: String, required: true },
         userId: { type: String, required: true },
+        associationId: {type: String, required: true },
+        companyId: {type: String, required: true },
         title: { type: String, required: true },
         description: { type: String, required: false },
+        date: { type: Date, required: true, default: Date.now },
         price: { type: Number, required: true },
-        begin: { type: Date, required: true },
-        end: { type: Date, required: true },
+        duration: { type: Number, required: false },
+        durationUnit: { type: String, required: false },
         comment: { type: String, required: false },
         createdAt: { type: Date, required: true, default: Date.now },
         modifiedAt: { type: Date, required: true, default: Date.now }

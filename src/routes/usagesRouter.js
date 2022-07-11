@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { deleteUsage, getAllUsages, getSingleUsageByUsageId, updateUsage } from "../controller/usagesController.js";
+import { createUsage, deleteUsage, getAllUsageesByUserId, getAllUsages, getAllUsagesByPassId, getSingleUsageByUsageId, updateUsage } from "../controller/usagesController.js";
 import { adminCheck, authorization, ownAccount } from "../middlewares/auth.js";
 
 export const usagesRouter = Router();
@@ -18,18 +18,13 @@ usagesRouter
 
 usagesRouter
     .route('/user/:userId')
-    .get(authorization, ownAccount, getAllUsageByUserId)
+    .get(authorization, ownAccount, getAllUsageesByUserId)
     .post(authorization, ownAccount, createUsage)
     .all();
-
-usagesRouter
+    
+    usagesRouter
     .route('/pass/:passId')
-    .get(authorization, ownAccount, getAllUsageByUserId)
+    .get(authorization, ownAccount, getAllUsagesByPassId)
     .post(authorization, ownAccount, createUsage)
     .all();
-
-usagesRouter
-    .route('/usage/:usageId')
-    .get(authorization, ownAccount, getAllUsageByUserId)
-    .post(authorization, ownAccount, createUsage)
-    .all();
+    
