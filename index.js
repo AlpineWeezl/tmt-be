@@ -6,6 +6,7 @@ import { usersRouter } from './src/routes/usersRouter.js';
 import { passesRouter } from './src/routes/passesRouter.js';
 import { usagesRouter } from './src/routes/usagesRouter.js';
 import { associationsRouter } from './src/routes/associationsRouter.js';
+import { companiesRouter } from './src/routes/companiesRouter.js';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -27,6 +28,7 @@ app.use(cors(corsOptions));
 // ----------------------------- Router -------------------------------------------------------
 // ############################################################################################
 app.use('/api/associations', associationsRouter);
+app.use('/api/companies', companiesRouter);
 app.use('/api/passes', passesRouter);
 app.use('/api/usages', usagesRouter);
 app.use('/api/users', usersRouter);
