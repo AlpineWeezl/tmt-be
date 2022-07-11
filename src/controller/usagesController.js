@@ -8,8 +8,7 @@ import { Usage } from "../models/Usage.js"
 // ----------------------------------------- new Usage ------------------------------------------------
 export const createUsage = async (req, res) => {
     const { usage } = req.body;
-    const { passId } = req.params;
-    usage.passId = passId;
+    console.log(usage);
     try {
         const createdUsage = await Usage.create(usage);
         res.status(201).json({ usage: createdUsage, message: 'Usage was created successfully' })

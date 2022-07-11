@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createCompany, deleteCompany, getAllCompanies, getAllCompaniesByAssociationId, updateCompany } from "../controller/companiesConroller.js";
+import { createCompany, deleteCompany, getAllCompanies, getAllCompaniesByAssociationId, getSingleCompanyByCompanyId, updateCompany } from "../controller/companiesConroller.js";
 import { adminCheck, authorization } from "../middlewares/auth.js";
 
 export const companiesRouter = Router();
@@ -11,6 +11,7 @@ companiesRouter
 
 companiesRouter
     .route('/:companyId')
+    .get(authorization, adminCheck, getSingleCompanyByCompanyId)
     .put(authorization, adminCheck, updateCompany)
     .delete(authorization, adminCheck, deleteCompany)
     .all();

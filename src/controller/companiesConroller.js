@@ -49,7 +49,7 @@ export const getAllCompaniesByAssociationId = async (req, res) => {
 export const getSingleCompanyByCompanyId = async (req, res) => {
     const { companyId } = req.params;
     try {
-        const company = await Company.findById(CompanyId);
+        const company = await Company.findById(companyId);
         res.status(200).json({ company: company })
     } catch (error) {
         res.status(500).json({ error: 'Company request failed' })
