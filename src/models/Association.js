@@ -4,9 +4,9 @@ const { Schema, model } = mongoose;
 
 const associationSchema = new Schema(
     {
-        title: { type: String, required: true },
+        title: { type: String, required: true, unique: true },
         shortTitle: {type: String, required: true, unique: true},
-        description: { type: String, required: false, unique: true },
+        description: { type: String, required: false},
         createdAt: { type: Date, required: true, default: Date.now },
         modifiedAt: { type: Date, required: true, default: Date.now }
     }
