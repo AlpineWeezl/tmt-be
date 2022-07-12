@@ -24,7 +24,7 @@ export const createAssociation = async (req, res) => {
 export const getAllAssociations = async (req, res) => {
     try {
         const association = await Association.find();
-        res.status(200).json({ association })
+        res.status(200).json({ associations: association })
     } catch (error) {
         res.status(500).json({ error: 'associations request failed' })
     }

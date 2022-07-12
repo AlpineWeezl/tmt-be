@@ -5,6 +5,7 @@ const { Schema, model } = mongoose;
 const passSchema = new Schema(
     {
         userId: { type: String, required: true },
+        associationId: { type: String, required: true },
         title: { type: String, required: true },
         description: { type: String, required: false },
         price: { type: Number, required: true },
