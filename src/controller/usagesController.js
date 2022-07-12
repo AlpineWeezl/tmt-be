@@ -46,7 +46,7 @@ export const getAllUsageesByUserId = async (req, res) => {
 export const getAllUsagesByPassId = async (req, res) => {
     const { passId } = req.params;
     try {
-        const usages = await Usage.find({ passId: passId });
+        const usages = await Usage.find({ passId: passId }).sort({date: 'desc'});
         if (usages) {
             res.status(200).json({ usages: usages });
         } else {
