@@ -10,6 +10,7 @@ export const encryptPassword = async (req, res, next) => {
         const salt = await bcrypt.genSalt(10);
         const encryptedPassword = await bcrypt.hash(password, salt);
         req.body.encryptedPassword = encryptedPassword;
+        req.body.user.password = encryptedPassword;
         next();
     } catch (err) {
         res.status(500).json({ error: 'Password encrytion failed!' });

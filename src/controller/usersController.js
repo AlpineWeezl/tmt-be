@@ -61,6 +61,7 @@ export const getSingleUserByUserId = async (req, res) => {
 export const updateUser = async (req, res) => {
     const { userId } = req.params;
     const { user } = req.body;
+    console.log(user);
     try {
         user.modifiedAt = new Date();
         const resUser = await User.findByIdAndUpdate(userId, user, { new: true });
@@ -88,7 +89,7 @@ export const deleteUser = async (req, res) => {
 export const logIn = async (req, res) => {
     const { token } = req.headers;
     const { user } = req.body;
-    console.log({'Login Controller: ': user});
+    console.log({ 'Login Controller: ': user });
     try {
         res
             .set("authorization", token)
@@ -107,12 +108,12 @@ export const verifySession = async (req, res) => {
         authorization && await res
             .set("authorization", authorization)
             .status(200)
-            .json({user: user, message: 'User successfully verified!' });
+            .json({ user: user, message: 'User successfully verified!' });
 
         !authorization && await res
             .status(401)
             .json({ message: 'User could NOT be verified!' })
     } catch (error) {
-        res.status(500).json({message: 'Shit'})
+        res.status(500).json({ message: 'Shit' })
     }
 };

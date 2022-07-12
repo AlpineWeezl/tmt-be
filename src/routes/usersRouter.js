@@ -27,3 +27,8 @@ usersRouter
     .put(authorization, ownAccount, updateUser)
     .delete(authorization, ownAccount, deleteUser)
     .all();
+
+usersRouter
+    .route('/password/:userId')
+    .put(authorization, ownAccount, encryptPassword, updateUser)
+    .all()
