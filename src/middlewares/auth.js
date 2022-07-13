@@ -39,13 +39,14 @@ export const createToken = async (req, res, next) => {
 export const authorization = async (req, res, next) => {
     const { authorization } = req.headers;
     if (!authorization) {
-        res.status(401).json({ error: "API Access denied" });
+        res.status(401).json({ error: "No Token provided" });
     } else {
         try {
             const decryptedToken = jwt.verify(authorization, process.env.JWT_SECRET);
             const user = await User.findById(decryptedToken.userId);
-            req.body.user = user;
-            req.decryptedToken = decryptedToken;
+            console.log(user);
+            req.body.newUser = user;
+            req.body.decryptedToken = decryptedToken;
             next();
         } catch (err) {
             res.status(401).json({ error: 'Token invalid!' });
@@ -76,7 +77,7 @@ export const credentialCheck = async (req, res, next) => {
 // ------------------------------------------------- check if the account to be modified is owned by the user reqeusted ---------------------------------
 export const ownAccount = async (req, res, next) => {
     const { passId } = req.params;
-    const { email, userId } = req.decryptedToken;
+    const { email, userId } = req.body.decryptedToken;
     try {
         const user = await User.findById(userId);
         const pass = await Pass.findById(passId);
@@ -92,11 +93,11 @@ export const ownAccount = async (req, res, next) => {
 
 // -------------------------------------------------------------- check if the user has admin privillegues -----------------------------------------------
 export const adminCheck = async (req, res, next) => {
-    const { user } = req.body;
-    if (user) {
+    const { newUser } = req.body;
+    if (newUser) {
         try {
             // const user = await User.findOne({ email: decryptedToken.email });
-            if (user.admin) {
+            if (newUser.admin) {
                 req.body.admin = true
                 next();
             } else {

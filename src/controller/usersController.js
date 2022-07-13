@@ -16,7 +16,7 @@ export const createUser = async (req, res) => {
         }
         const createdUser = await User.create(newUser);
         createTokenForNewUser(createdUser);
-        res.set({ 'authorization': token }).status(201).json({ user: createdUser, message: 'success' });
+        res.set({ 'authorization': token }).status(201).json({ user: createdUser, message: 'User created, successfully' });
 
     } catch (error) {
         res.status(500).json({ error: 'Creation of new user failed!' })
@@ -39,7 +39,7 @@ const createTokenForNewUser = async (user) => {
 export const getAllUsers = async (req, res) => {
     try {
         const users = await User.find();
-        res.status(200).json({ users })
+        res.status(200).json({ users: users, message: `Users found.` })
     } catch (error) {
         res.status(500).json({ error: 'Users request failed' })
     }
@@ -50,7 +50,7 @@ export const getSingleUserByUserId = async (req, res) => {
     const { userId } = req.params;
     try {
         const user = await User.findById(userId);
-        res.status(200).json({ user: user })
+        res.status(200).json({ user: user, message: `User found.` })
     } catch (error) {
         res.status(500).json({ error: 'User request failed' })
     }
@@ -61,11 +61,10 @@ export const getSingleUserByUserId = async (req, res) => {
 export const updateUser = async (req, res) => {
     const { userId } = req.params;
     const { user } = req.body;
-    console.log(user);
     try {
         user.modifiedAt = new Date();
         const resUser = await User.findByIdAndUpdate(userId, user, { new: true });
-        res.status(200).json({ user: resUser });
+        res.status(200).json({ user: resUser, message: `${res.username} updated, successfully` });
     } catch (error) {
         res.status(500).json({ error: 'Modifying of the user failed!' })
     }
@@ -76,7 +75,7 @@ export const deleteUser = async (req, res) => {
     const { userId } = req.params;
     try {
         await User.findByIdAndDelete(userId);
-        res.status(200).json({ message: 'User successfully deleted!' });
+        res.status(200).json({ message: `User ${userId} successfully deleted!` });
     } catch (error) {
         res.status(500).json({ error: 'Deleting of the user failed!' })
     }
@@ -88,7 +87,7 @@ export const deleteUser = async (req, res) => {
 // ----------------------------------------- LogIn ---------------------------------------------------
 export const logIn = async (req, res) => {
     const { token } = req.headers;
-    const { user } = req.body;
+    const { newUser, user } = req.body;
     console.log({ 'Login Controller: ': user });
     try {
         res
@@ -103,12 +102,12 @@ export const logIn = async (req, res) => {
 // -------------------------------- create the response if succesfully verified ----------------------
 export const verifySession = async (req, res) => {
     const { authorization } = req.headers;
-    const { user } = req.body;
+    const { newUser } = req.body;
     try {
         authorization && await res
             .set("authorization", authorization)
             .status(200)
-            .json({ user: user, message: 'User successfully verified!' });
+            .json({ user: newUser, message: 'User successfully verified!' });
 
         !authorization && await res
             .status(401)
