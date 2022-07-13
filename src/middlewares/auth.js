@@ -44,7 +44,7 @@ export const authorization = async (req, res, next) => {
         try {
             const decryptedToken = jwt.verify(authorization, process.env.JWT_SECRET);
             const user = await User.findById(decryptedToken.userId);
-            (!req.body.user) && (req.body.user = user);
+            req.body.user = user;
             req.decryptedToken = decryptedToken;
             next();
         } catch (err) {
@@ -93,7 +93,7 @@ export const ownAccount = async (req, res, next) => {
 // -------------------------------------------------------------- check if the user has admin privillegues -----------------------------------------------
 export const adminCheck = async (req, res, next) => {
     const { user } = req.body;
-    if (user.email) {
+    if (user) {
         try {
             // const user = await User.findOne({ email: decryptedToken.email });
             if (user.admin) {
