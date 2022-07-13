@@ -8,6 +8,7 @@ import { Pass } from "../models/Pass.js"
 // ----------------------------------------- new Pass ------------------------------------------------
 export const createPass = async (req, res) => {
     const { pass } = req.body;
+    console.log(pass);
     const { token } = req.headers;
     const { userId } = req.params;
     pass.userId = userId;
@@ -75,9 +76,12 @@ export const updatePass = async (req, res) => {
 
 // ######################################## Delete ###################################################
 export const deletePass = async (req, res) => {
-    const { PassId } = req.params;
+    const { passId } = req.params;
+    console.log(passId);
+
     try {
-        await Pass.findByIdAndDelete(PassId);
+        await Usage.deleteMany({ passId: passId });
+        await Pass.findByIdAndDelete(passId);
         res.status(200).json({ message: 'Pass successfully deleted!' });
     } catch (error) {
         res.status(500).json({ error: 'Deleting of the Pass failed!' })
