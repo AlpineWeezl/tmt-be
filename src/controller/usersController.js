@@ -86,12 +86,11 @@ export const deleteUser = async (req, res) => {
 // ###################################################################################################
 // ----------------------------------------- LogIn ---------------------------------------------------
 export const logIn = async (req, res) => {
-    const { token } = req.headers;
-    const { newUser, user } = req.body;
-    console.log({ 'Login Controller: ': user });
+    const { authorization } = req;
+    const { user } = req.body;
     try {
         res
-            .set("authorization", token)
+            .set("authorization", authorization)
             .status(200)
             .json({ user: user, message: "User successfully logged in" });
     } catch (error) {
