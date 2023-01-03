@@ -88,11 +88,12 @@ export const deleteUser = async (req, res) => {
 export const logIn = async (req, res) => {
     const { authorization } = req;
     const { user } = req.body;
+    const { token } = req.headers;
     try {
         res
             .set("authorization", authorization)
             .status(200)
-            .json({ user: user, message: "User successfully logged in" });
+            .json({ user: user, message: "User successfully logged in", token: token });
     } catch (error) {
         res.status(500).json({ error: 'Login failed!' });
     }
