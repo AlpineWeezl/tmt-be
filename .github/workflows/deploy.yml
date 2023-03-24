@@ -15,18 +15,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    
-    - name: install latest npm lts
-      run: bash /home/matthias/.nvm/nvm.sh install --lts
-      
-    - name: use latest npm lts
-      run: bash /home/matthias/.nvm/nvm.sh use --lts
-
-    - name: check node version
-      run: bash /home/matthias/node_modules/node --version
 
     - name: get npm packages
-      run: bash /home/matthias/node_modules/npm i
+      run: npm i
 
     - name: Build Docker image
       run: docker compose -f docker-compose.yml up -d
