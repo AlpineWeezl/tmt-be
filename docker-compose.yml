@@ -19,6 +19,8 @@ services:
          condition: service_started
      image: trackmyticketserver
      container_name: trackmyticketserver
+     build:
+       dockerfile: Dockerfile
      ports:
        - "8081"
      environment:
