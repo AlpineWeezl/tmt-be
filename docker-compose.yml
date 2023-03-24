@@ -2,7 +2,7 @@ version: "3.9"
 services:
   # trackmyticket-database
   trackmyticket-database:
-    image: mongodb:latest
+    image: mongodb/mongodb-community-server:latest
     container_name: trackmyticket-database
     hostname: trackmyticket-database
     environment:
