@@ -6,7 +6,6 @@ services:
     container_name: trackmyticket-database
     hostname: trackmyticket-database
     environment:
-      - TZ=Europe/Berlin
       - MONGODB_INITDB_ROOT_USERNAME=trackmyticketuser
       - MONGODB_INITDB_ROOT_PASSWORD=71B4D8X0PPQUNzFm
       - MONGODB_INITDB_DATABASE=trackmyticket
