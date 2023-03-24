@@ -6,9 +6,9 @@ services:
     container_name: trackmyticket-database
     hostname: trackmyticket-database
     environment:
-      - USER=trackmyticketuser
-      - PASSWORD=71B4D8X0PPQUNzFm
-      - DATABASE=trackmyticket
+      - POSTGRES_USER=trackmyticketuser
+      - POSTGRES_PASSWORD=71B4D8X0PPQUNzFm
+      - POSTGRES_DB=trackmyticket
     restart: always
 
   # Backend Application
