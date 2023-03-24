@@ -1,0 +1,24 @@
+name: Deploy on AlpineWeezl-Server
+
+on:
+  pull_request:
+    types: close
+  push:
+    branches: main
+
+jobs:
+  build:
+    runs-on: [ self-hosted, linux, x64 ]
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build NPM
+      run: npm i
+
+    - name: Build Docker image
+      run: docker compose -f docker-compose.yml up -d
+    
