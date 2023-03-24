@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  # trackmyticket-database
+  trackmyticket-database:
+    image: mongo:latest
+    container_name: trackmyticket-database
+    hostname: trackmyticket-database
+    environment:
+      - TZ=Europe/Berlin
+      - MONGO_INITDB_ROOT_USERNAME=trackmyticketuser
+      - MONGO_INITDB_ROOT_PASSWORD=71B4D8X0PPQUNzFm
+      - MONGO_INITDB_DATABASE=trackmyticket
+    restart: always
+
+  # Backend Application
+  schafkopfturnierserver:
+     depends_on:
+       trackmyticket-database:
+         condition: service_started
+     image: trackmyticketserver
+     container_name: trackmyticketserver
+     ports:
+       - "8081"
+     environment:
+       - MONGO_DB_CONN=jmongodb+srv://trackmyticketuser:71B4D8X0PPQUNzFm@trackmyticket-database/?retryWrites=true&w=majority
+       - REACT_APP_URI=https://my-tickets.netlify.app
+       - JWT_SECRET=xlrFQOo6ka0zrCh6GcebT5dvbjkb2cUS
+     restart: always
