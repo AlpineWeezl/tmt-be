@@ -7,9 +7,9 @@ services:
     hostname: trackmyticket-database
     environment:
       - TZ=Europe/Berlin
-      - MONGO_INITDB_ROOT_USERNAME=trackmyticketuser
-      - MONGO_INITDB_ROOT_PASSWORD=71B4D8X0PPQUNzFm
-      - MONGO_INITDB_DATABASE=trackmyticket
+      - MONGODB_INITDB_ROOT_USERNAME=trackmyticketuser
+      - MONGODB_INITDB_ROOT_PASSWORD=71B4D8X0PPQUNzFm
+      - MONGODB_INITDB_DATABASE=trackmyticket
     restart: always
 
   # Backend Application
