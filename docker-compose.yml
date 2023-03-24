@@ -2,17 +2,17 @@ version: "3.9"
 services:
   # trackmyticket-database
   trackmyticket-database:
-    image: mongodb/mongodb-community-server:latest
+    image: postgres:latest
     container_name: trackmyticket-database
     hostname: trackmyticket-database
     environment:
-      - MONGODB_INITDB_ROOT_USERNAME=trackmyticketuser
-      - MONGODB_INITDB_ROOT_PASSWORD=71B4D8X0PPQUNzFm
-      - MONGODB_INITDB_DATABASE=trackmyticket
+      - USER=trackmyticketuser
+      - PASSWORD=71B4D8X0PPQUNzFm
+      - DATABASE=trackmyticket
     restart: always
 
   # Backend Application
-  schafkopfturnierserver:
+  trackmyticketserver:
      depends_on:
        trackmyticket-database:
          condition: service_started
@@ -23,7 +23,7 @@ services:
      ports:
        - "8081"
      environment:
-       - MONGO_DB_CONN=jmongodb+srv://trackmyticketuser:71B4D8X0PPQUNzFm@trackmyticket-database/?retryWrites=true&w=majority
+       - MONGO_DB_CONN=postgresql://schafkopf-database:5432/schafkopf
        - REACT_APP_URI=https://my-tickets.netlify.app
        - JWT_SECRET=xlrFQOo6ka0zrCh6GcebT5dvbjkb2cUS
      restart: always
