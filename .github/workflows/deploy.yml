@@ -17,10 +17,10 @@ jobs:
     - uses: actions/checkout@v3
     
     - name: install latest npm lts
-      run: bash /home/matthias/.nvm/nvm install --lts
+      run: bash /home/matthias/.nvm/nvm.sh install --lts
       
     - name: use latest npm lts
-      run: bash /home/matthias/.nvm/nvm use --lts
+      run: bash /home/matthias/.nvm/nvm.sh use --lts
 
     - name: check node version
       run: bash /home/matthias/node_modules/node --version
