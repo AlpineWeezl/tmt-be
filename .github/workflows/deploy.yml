@@ -16,6 +16,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: install nvm version manager
+      run: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+    
     - name: install latest npm lts
       run: nvm install --lts
       
